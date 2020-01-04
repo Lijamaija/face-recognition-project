@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/Navigation';
+import Signin from './components/Signin/Signin';
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
+import Register from './components/Register/Register';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import './App.css';
 
@@ -46,7 +48,8 @@ class App extends Component {
         this.state = {
             input: '',
             imageUrl: '',
-            box: {}
+            box: {},
+            route:'signin'
         }
     }
     calculateFaceLocation = (data) => {
@@ -76,25 +79,34 @@ class App extends Component {
             .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
                 .catch(err => console.log(err));
         }
-            function (err) {
+          /*  function (err) {
                 // there was an error
-            }
+            } */
+    onRouteChange = (route) => {
+        this.setState({ route: route });
+
+    }
 
 
     render() {
     return(
-          <div className="App">
+        <div className="App">
               <Particles className='particles'
-                  params={particlesOptions} />
-
-          <Navigation />
-              <Logo />
-            <Rank />
-            <ImageLinkForm onInputChange={this.onInputChange}
-                onButtonSubmit={this.onButtonSubmit} />
-            <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} /> 
-
-       
+                params={particlesOptions} />
+            <Navigation onRouteChange={this.onRouteChange} />
+            {this.state.route === 'signin' ?
+                <Signin onRouteChange={this.onRouteChange}/>
+              :<div>
+                    <Logo />
+                    <Rank />
+                    <Register/>
+                    <ImageLinkForm
+                      onInputChange={this.onInputChange}
+                        onButtonSubmit={this.onButtonSubmit}
+                     />
+                 <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} /> 
+               </div>
+            }
         </div>
       );
     }
